@@ -1,13 +1,13 @@
-using System;
 using Mirror;
 using Steamworks;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SteamLobby : MonoBehaviour
 {
+    public static SteamLobby Instance;
+    void Awake() => Instance = this;
+    
     public ulong currentLobbyID;
-    public Text lobbyNameText;
     
     protected Callback<LobbyCreated_t> LobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> JoinRequest;
@@ -22,9 +22,14 @@ public class SteamLobby : MonoBehaviour
 
         _manager = GetComponent<CustomSteamManager>();
 
+        #region Callbacks
+
         LobbyCreated = Callback<LobbyCreated_t>.Create(OnlObbyCreated);
         JoinRequest = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+
+        #endregion
+        
     }
 
     public void HostLobby()
@@ -59,8 +64,8 @@ public class SteamLobby : MonoBehaviour
         
         var ulSteamIDLobby = new CSteamID(callback.m_ulSteamIDLobby);
         
-        lobbyNameText.gameObject.SetActive(true);
-        lobbyNameText.text = SteamMatchmaking.GetLobbyData(ulSteamIDLobby,"name");
+        /*lobbyNameText.gameObject.SetActive(true);
+        lobbyNameText.text = SteamMatchmaking.GetLobbyData(ulSteamIDLobby,"name");*/
         
         if(NetworkServer.active) return;
 
