@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using Steamworks;
 using UnityEngine;
@@ -31,6 +32,11 @@ public class PlayerObjectController : NetworkBehaviour
 
     #endregion
 
+    private void Start()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     public override void OnStartAuthority()
     {
         CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
@@ -48,7 +54,7 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        Manager.gamePlayers.Remove(this);
+        _manager.gamePlayers.Remove(this);
         LobbyController.Instance.UpdatePlayerList();
     }
 
@@ -63,10 +69,21 @@ public class PlayerObjectController : NetworkBehaviour
     {
         this.PlayerReadyUpdate(this.playerReady, !this.playerReady);
     }
+    
+    [Command]
+    void CmdCanStartGame(string sceneName)
+    {
+        _manager.StartGame(sceneName);
+    }
 
     public void ChangeReady()
     {
         if (authority) CmdSetPlayerReady();
+    }
+
+    public void CanStartGame(string sceneName)
+    {
+        if(authority) CmdCanStartGame(sceneName);
     }
 
     public void PlayerNameUpdate(string oldValue, string newValue)

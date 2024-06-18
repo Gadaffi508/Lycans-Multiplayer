@@ -18,6 +18,11 @@ public class CustomSteamManager : NetworkManager
         NetworkServer.AddPlayerForConnection(conn, SetPlayerObject(conn));
     }
 
+    public void StartGame(string sceneName)
+    {
+        ServerChangeScene(sceneName);
+    }
+
     GameObject SetPlayerObject(NetworkConnectionToClient conn)
     {
         PlayerObjectController gamePlayerInstance = Instantiate(gamePlayerPrefab);

@@ -9,11 +9,9 @@ public class LobbyController : MonoBehaviour
 {
     public static LobbyController Instance { get; private set; }
 
-    [Header("Lobby Setting")]
-    public Text lobbyNameText;
+    [Header("Lobby Setting")] public Text lobbyNameText;
 
-    [Header("Lobby Player Settings")]
-    public Transform playerListViewContent;
+    [Header("Lobby Player Settings")] public Transform playerListViewContent;
     public GameObject playerListItemPrefab;
     public GameObject localPlayerObject;
 
@@ -22,8 +20,7 @@ public class LobbyController : MonoBehaviour
 
     public PlayerObjectController localPlayerController;
 
-    [Header("Ready Setting")]
-    public Text readyButtonText;
+    [Header("Ready Setting")] public Text readyButtonText;
 
     private List<PlayerLıstItem> _playerListItems = new List<PlayerLıstItem>();
 
@@ -61,7 +58,7 @@ public class LobbyController : MonoBehaviour
     {
         bool allReady = false;
 
-        foreach (PlayerObjectController player in Manager.gamePlayers)
+        foreach (PlayerObjectController player in _manager.gamePlayers)
         {
             if (player.playerReady) allReady = true;
             else
@@ -88,14 +85,19 @@ public class LobbyController : MonoBehaviour
     public void UpdatePlayerList()
     {
         if (!playerItemCreated) CreateHostPlayerItem();
-        if (_playerListItems.Count < Manager.gamePlayers.Count) CreateClientPlayerItem();
-        if (_playerListItems.Count > Manager.gamePlayers.Count) RemovePlayerItem();
-        if (_playerListItems.Count == Manager.gamePlayers.Count) UpdatePlayerItem();
+        if (_playerListItems.Count < _manager.gamePlayers.Count) CreateClientPlayerItem();
+        if (_playerListItems.Count > _manager.gamePlayers.Count) RemovePlayerItem();
+        if (_playerListItems.Count == _manager.gamePlayers.Count) UpdatePlayerItem();
     }
 
-    private void CreateHostPlayerItem()
+    public void StartGame(string sceneName)
     {
-        foreach (var player in Manager.gamePlayers)
+        localPlayerController.CanStartGame(sceneName);
+    }
+
+    void CreateHostPlayerItem()
+    {
+        foreach (var player in _manager.gamePlayers)
         {
             var newPlayerItem = Instantiate(playerListItemPrefab);
             var newPlayerItemScript = newPlayerItem.GetComponent<PlayerLıstItem>();
@@ -111,9 +113,10 @@ public class LobbyController : MonoBehaviour
         playerItemCreated = true;
     }
 
-    private void CreateClientPlayerItem()
+    void CreateClientPlayerItem()
     {
-        foreach (var player in Manager.gamePlayers.Where(player => _playerListItems.All(b => b.connectionID != player.connectionID)))
+        foreach (var player in _manager.gamePlayers.Where(player =>
+                     _playerListItems.All(b => b.connectionID != player.connectionID)))
         {
             var newPlayerItem = Instantiate(playerListItemPrefab);
             var newPlayerItemScript = newPlayerItem.GetComponent<PlayerLıstItem>();
@@ -127,24 +130,28 @@ public class LobbyController : MonoBehaviour
         }
     }
 
-    private void RemovePlayerItem()
+    void RemovePlayerItem()
     {
         var playerListItemToRemove = _playerListItems
-            .Where(playerListItem => Manager.gamePlayers.All(b => b.connectionID != playerListItem.connectionID))
+            .Where(playerListItem => _manager.gamePlayers.All(b => b.connectionID != playerListItem.connectionID))
             .ToList();
 
         foreach (var playerListItem in playerListItemToRemove)
         {
-            _playerListItems.Remove(playerListItem);
-            Destroy(playerListItem.gameObject);
+            if (playerListItem != null)
+            {
+                _playerListItems.Remove(playerListItem);
+                Destroy(playerListItem.gameObject);
+            }
         }
     }
 
-    private void UpdatePlayerItem()
+    void UpdatePlayerItem()
     {
-        foreach (var player in Manager.gamePlayers)
+        foreach (var player in _manager.gamePlayers)
         {
-            var playerListItemScript = _playerListItems.FirstOrDefault(item => item.connectionID == player.connectionID);
+            var playerListItemScript =
+                _playerListItems.FirstOrDefault(item => item.connectionID == player.connectionID);
             if (playerListItemScript != null)
             {
                 playerListItemScript.name = player.playerName;
@@ -157,10 +164,11 @@ public class LobbyController : MonoBehaviour
                 }
             }
         }
+
         CheckIfAllReady();
     }
 
-    private void InitializePlayerItem(PlayerObjectController player, PlayerLıstItem playerListItemScript)
+    void InitializePlayerItem(PlayerObjectController player, PlayerLıstItem playerListItemScript)
     {
         playerListItemScript.playerName = player.playerName;
         playerListItemScript.connectionID = player.connectionID;
