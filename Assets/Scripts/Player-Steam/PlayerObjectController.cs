@@ -12,6 +12,9 @@ public class PlayerObjectController : NetworkBehaviour
 
     [SyncVar(hook = nameof(PlayerNameUpdate))]
     public string playerName;
+    
+    [SyncVar(hook = nameof(PlayerReadyUpdate))]
+    public bool playerReady;
 
     #region CustomManagerSingleton
 
@@ -54,10 +57,28 @@ public class PlayerObjectController : NetworkBehaviour
     {
         this.PlayerNameUpdate(this.playerName, _playerName);
     }
+    
+    [Command]
+    void CmdSetPlayerReady()
+    {
+        this.PlayerReadyUpdate(this.playerReady, !this.playerReady);
+    }
+
+    public void ChangeReady()
+    {
+        if (authority) CmdSetPlayerReady();
+    }
 
     public void PlayerNameUpdate(string oldValue, string newValue)
     {
         if (isServer) this.playerName = newValue;
+
+        if (isClient) LobbyController.Instance.UpdatePlayerList();
+    }
+
+    public void PlayerReadyUpdate(bool oldValue, bool newValue)
+    {
+        if (isServer) this.playerReady = newValue;
 
         if (isClient) LobbyController.Instance.UpdatePlayerList();
     }

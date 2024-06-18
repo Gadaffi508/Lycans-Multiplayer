@@ -22,6 +22,9 @@ public class LobbyController : MonoBehaviour
 
     public PlayerObjectController localPlayerController;
 
+    [Header("Ready Setting")]
+    public Text readyButtonText;
+
     private List<PlayerLıstItem> _playerListItems = new List<PlayerLıstItem>();
 
     #region CustomManagerSingleton
@@ -35,6 +38,38 @@ public class LobbyController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    public void ReadyPlayer()
+    {
+        localPlayerController.ChangeReady();
+    }
+
+    public void UpdateButton()
+    {
+        if (localPlayerController.playerReady)
+        {
+            readyButtonText.text = "Unready";
+        }
+        else
+        {
+            readyButtonText.text = "Ready";
+        }
+    }
+
+    public void CheckIfAllReady()
+    {
+        bool allReady = false;
+
+        foreach (PlayerObjectController player in Manager.gamePlayers)
+        {
+            if (player.playerReady) allReady = true;
+            else
+            {
+                allReady = false;
+                break;
+            }
+        }
     }
 
     public void UpdateLobbyName()
@@ -113,9 +148,16 @@ public class LobbyController : MonoBehaviour
             if (playerListItemScript != null)
             {
                 playerListItemScript.name = player.playerName;
+                playerListItemScript.ready = player.playerReady;
                 playerListItemScript.SetPlayerValues();
+
+                if (player == localPlayerController)
+                {
+                    UpdateButton();
+                }
             }
         }
+        CheckIfAllReady();
     }
 
     private void InitializePlayerItem(PlayerObjectController player, PlayerLıstItem playerListItemScript)
@@ -123,6 +165,7 @@ public class LobbyController : MonoBehaviour
         playerListItemScript.playerName = player.playerName;
         playerListItemScript.connectionID = player.connectionID;
         playerListItemScript.playerSteamID = player.playerSteamID;
+        playerListItemScript.ready = player.playerReady;
         playerListItemScript.SetPlayerValues();
     }
 }

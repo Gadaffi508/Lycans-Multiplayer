@@ -8,6 +8,8 @@ public class SteamLobby : MonoBehaviour
     void Awake() => Instance = this;
     
     public ulong currentLobbyID;
+
+    public GameObject lobbyObject;
     
     protected Callback<LobbyCreated_t> LobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> JoinRequest;
@@ -19,6 +21,8 @@ public class SteamLobby : MonoBehaviour
     void Start()
     {
         if(!SteamManager.Initialized) return;
+        
+        lobbyObject.SetActive(false);
 
         _manager = GetComponent<CustomSteamManager>();
 
@@ -35,6 +39,8 @@ public class SteamLobby : MonoBehaviour
     public void HostLobby()
     {
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly,_manager.maxConnections);
+        
+        lobbyObject.SetActive(true);
     }
 
     void OnlObbyCreated(LobbyCreated_t callback)
