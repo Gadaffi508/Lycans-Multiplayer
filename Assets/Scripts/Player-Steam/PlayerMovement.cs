@@ -8,30 +8,26 @@ public class PlayerMovement : NetworkBehaviour
 {
     public float speed;
 
-    public GameObject playerModel;
-
     private Rigidbody _rb;
 
     private Vector3 _velocity;
     
     private float _x, _y;
 
+    private Animator _animator;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+
+        _animator = GetComponentInChildren<Animator>();
         
-        playerModel.SetActive(false);
+        SetPosition();
     }
 
     void Update()
     {
         if(SceneManager.GetActiveScene().name != "Game") return;
-
-        if (playerModel.activeSelf == false)
-        {
-            SetPosition();
-            playerModel.SetActive(true);
-        }
 
         if(authority) Movement();
     }
@@ -49,5 +45,7 @@ public class PlayerMovement : NetworkBehaviour
         _velocity = new Vector3(_x,0,_y);
 
         _rb.velocity = _velocity * Time.deltaTime * speed;
+        
+        _animator.SetFloat("velocity",_rb.velocity.magnitude);
     }
 }
