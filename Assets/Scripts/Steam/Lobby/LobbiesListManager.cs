@@ -7,8 +7,8 @@ public class LobbiesListManager : MonoBehaviour
 {
     public static LobbiesListManager Instance;
     void Awake() => Instance = this;
-    
-    public GameObject lobbiesMenu,
+
+    public GameObject
         lobbyDataItemPrefab,
         lobbyLisContent;
 
@@ -33,14 +33,14 @@ public class LobbiesListManager : MonoBehaviour
 
                 ıtemData.lobbyName = SteamMatchmaking.GetLobbyData(
                     (CSteamID)lobbyIDs[i].m_SteamID, "name");
-                
+
                 ıtemData.members = SteamMatchmaking.GetNumLobbyMembers(
                     (CSteamID)lobbyIDs[i].m_SteamID).ToString() + "/ 10";
-                
+
                 createdItem.GetComponent<LobbyDataEntry>().SetLobbyData();
                 createdItem.transform.SetParent(lobbyLisContent.transform);
                 createdItem.transform.localScale = Vector3.one;
-                
+
                 listOfLobbies.Add(createdItem);
             }
         }
@@ -52,6 +52,7 @@ public class LobbiesListManager : MonoBehaviour
         {
             Destroy(lobbyItem);
         }
+
         listOfLobbies.Clear();
     }
 }

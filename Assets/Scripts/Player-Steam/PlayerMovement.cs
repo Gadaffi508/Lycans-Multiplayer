@@ -7,45 +7,46 @@ using Random = UnityEngine.Random;
 public class PlayerMovement : NetworkBehaviour
 {
     public float speed;
+    public float rotationSpeed;
+
+    private float _X, _Y;
+    private Vector3 _movement;
 
     private Rigidbody _rb;
-
-    private Vector3 _velocity;
-    
-    private float _x, _y;
-
     private Animator _animator;
 
-    void Start()
+    private void Start()
     {
         _rb = GetComponent<Rigidbody>();
 
         _animator = GetComponentInChildren<Animator>();
-        
-        SetPosition();
     }
 
-    void Update()
+    private void Update()
     {
-        if(SceneManager.GetActiveScene().name != "Game") return;
+        if(!isLocalPlayer) return;
 
-        if(authority) Movement();
-    }
-
-    void SetPosition()
-    {
-        transform.position = new Vector3(Random.Range(-5,5),1,Random.Range(-5,5));
-    }
-
-    void Movement()
-    {
-        _x = Input.GetAxis("Horizontal");
-        _y = Input.GetAxis("Vertical");
-
-        _velocity = new Vector3(_x,0,_y);
-
-        _rb.velocity = _velocity * Time.deltaTime * speed;
+        _X = Input.GetAxis("Horizontal");
+        _Y = Input.GetAxis("Vertical");
         
         _animator.SetFloat("velocity",_rb.velocity.magnitude);
+        
+        CmdMove(_X,_Y);
+    }
+
+    [Command]
+    void CmdMove(float x, float y) => RpcMove(x,y);
+
+    [ClientRpc]
+    void RpcMove(float x, float y)
+    {
+        Vector3 dir = new Vector3(x, 0, y).normalized;
+
+        _rb.velocity = dir * speed * Time.deltaTime;
+        
+        if (dir == Vector3.zero) return;
+        
+        Quaternion lookDir = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookDir, rotationSpeed * Time.deltaTime);
     }
 }

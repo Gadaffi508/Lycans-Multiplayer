@@ -805,8 +805,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   connectionID: 0
-  playerIdNumber: 0
+  playerModel: {fileID: 4226638090587962687}
   playerSteamID: 0
+  playerIdNumber: 0
   playerName: 
   playerReady: 0
 --- !u!114 &3379305198715628746
@@ -825,6 +826,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   speed: 700
+  rotationSpeed: 0
 --- !u!114 &3910229120289106835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -840,7 +842,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  cameraHolder: {fileID: 7994747237292499224}
+  cameraHolder: {fileID: 1160511939217600813}
   offset: {x: 0, y: 0.5, z: -2.5}
 --- !u!1 &1791349211742414312
 GameObject:

@@ -7,9 +7,11 @@ public class PlayerObjectController : NetworkBehaviour
 {
     [Header("Player Steam Property")] [SyncVar]
     public int connectionID;
+    
+    [SyncVar] public GameObject playerModel;
 
-    [SyncVar] public int playerIdNumber;
     [SyncVar] public ulong playerSteamID;
+    [SyncVar] public int playerIdNumber;
 
     [SyncVar(hook = nameof(PlayerNameUpdate))]
     public string playerName;
@@ -39,6 +41,8 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
+        DontDestroyOnLoad(this);
+        
         CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
         gameObject.name = "LocalGamePlayer";
         LobbyController.Instance.FindLobbyPlayer();

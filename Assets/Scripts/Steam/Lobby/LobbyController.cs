@@ -32,14 +32,17 @@ public class LobbyController : MonoBehaviour
 
     #endregion
 
-    private void Awake()
-    {
+    void Awake() =>
         Instance = this;
-    }
 
     public void ReadyPlayer()
     {
         localPlayerController.ChangeReady();
+    }
+    
+    public void HostLobby()
+    {
+        SteamLobby.Instance.HostLobby();
     }
 
     public void UpdateButton()

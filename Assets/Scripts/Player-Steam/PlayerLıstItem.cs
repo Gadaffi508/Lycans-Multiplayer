@@ -20,10 +20,8 @@ public class PlayerLıstItem : MonoBehaviour
 
     private bool _avatarRecevied;
 
-    void Start()
-    {
+    void Start() =>
         ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
-    }
 
     public void ChangeReadyStatus()
     {

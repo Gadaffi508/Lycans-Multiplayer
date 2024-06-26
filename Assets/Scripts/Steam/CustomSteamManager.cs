@@ -10,17 +10,24 @@ public class CustomSteamManager : NetworkManager
     public PlayerObjectController gamePlayerPrefab;
 
     public List<PlayerObjectController> gamePlayers = new List<PlayerObjectController>();
+    
+    private NetworkConnectionToClient _conn;
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        if (SceneManager.GetActiveScene().name != "Lobby") return;
+        _conn = conn;
 
-        NetworkServer.AddPlayerForConnection(conn, SetPlayerObject(conn));
+        InstatePlayer();
     }
 
     public void StartGame(string sceneName)
     {
         ServerChangeScene(sceneName);
+    }
+    
+    public void InstatePlayer()
+    {
+        NetworkServer.AddPlayerForConnection(_conn, SetPlayerObject(_conn));
     }
 
     GameObject SetPlayerObject(NetworkConnectionToClient conn)

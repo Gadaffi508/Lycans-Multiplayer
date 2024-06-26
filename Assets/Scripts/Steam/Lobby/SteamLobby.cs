@@ -9,8 +9,6 @@ public class SteamLobby : MonoBehaviour
     void Awake() => Instance = this;
     
     public ulong currentLobbyID;
-
-    public GameObject lobbyObject;
     
     protected Callback<LobbyCreated_t> LobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> JoinRequest;
@@ -18,6 +16,8 @@ public class SteamLobby : MonoBehaviour
 
     protected Callback<LobbyMatchList_t> LobbyList;
     protected Callback<LobbyDataUpdate_t> LobbyDataUpdated;
+    
+    protected Callback<LobbyChatMsg_t> lobbyChatMsg;
 
     public List<CSteamID> lobbyIDs = new List<CSteamID>();
     
@@ -27,8 +27,6 @@ public class SteamLobby : MonoBehaviour
     void Start()
     {
         if(!SteamManager.Initialized) return;
-        
-        lobbyObject.SetActive(false);
 
         _manager = GetComponent<CustomSteamManager>();
 
@@ -40,6 +38,8 @@ public class SteamLobby : MonoBehaviour
 
         LobbyList = Callback<LobbyMatchList_t>.Create(OnGetLobbyList);
         LobbyDataUpdated = Callback<LobbyDataUpdate_t>.Create(OnGetLobbyData);
+        
+        lobbyChatMsg = Callback<LobbyChatMsg_t>.Create(OnLobbyChatMessage);
 
         #endregion
 
@@ -53,17 +53,34 @@ public class SteamLobby : MonoBehaviour
     public void HostLobby()
     {
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic,_manager.maxConnections);
-        
-        lobbyObject.SetActive(true);
+    }
+    
+    public void LeaveGame(CSteamID lobbyID)
+    {
+        SteamMatchmaking.LeaveLobby(lobbyID);
     }
 
     public void GetLobbiesList()
     {
         if(lobbyIDs.Count > 0) lobbyIDs.Clear();
         
-        SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterDefault);
         SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
         SteamMatchmaking.RequestLobbyList();
+    }
+    
+    void OnLobbyChatMessage(LobbyChatMsg_t callback)
+    {
+        byte[] data = new byte[4096];
+
+        CSteamID steamIDUser;
+        EChatEntryType chatEntryType = EChatEntryType.k_EChatEntryTypeChatMsg;
+
+        SteamMatchmaking.GetLobbyChatEntry((CSteamID)callback.m_ulSteamIDLobby, (int)callback.m_iChatID,
+            out steamIDUser, data, data.Length, out chatEntryType);
+
+        string message = System.Text.Encoding.UTF8.GetString(data);
+        
+        SteamChatManager.Instance.DisplayChatMessage(SteamFriends.GetFriendPersonaName(steamIDUser),message);
     }
 
     void OnlObbyCreated(LobbyCreated_t callback)
@@ -91,9 +108,9 @@ public class SteamLobby : MonoBehaviour
     {
         currentLobbyID = callback.m_ulSteamIDLobby;
         
-        var ulSteamIDLobby = new CSteamID(callback.m_ulSteamIDLobby);
-        
         if(NetworkServer.active) return;
+        
+        var ulSteamIDLobby = new CSteamID(callback.m_ulSteamIDLobby);
 
         _manager.networkAddress = SteamMatchmaking.GetLobbyData(ulSteamIDLobby,HostAddressKey);
         

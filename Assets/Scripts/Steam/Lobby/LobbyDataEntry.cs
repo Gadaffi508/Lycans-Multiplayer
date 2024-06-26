@@ -18,7 +18,7 @@ public class LobbyDataEntry : MonoBehaviour
         if (lobbyName == "")
             lobbyNameText.text = "null";
         else 
-            lobbyNameText.text = "lobbyName";
+            lobbyNameText.text = lobbyName;
 
         membersText.text = members;
     }
