@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 902722623650840497}
-  - component: {fileID: 769146320194311399}
+  - component: {fileID: 1117838330638071259}
   m_Layer: 5
   m_Name: Lobby Entry Item
   m_TagString: Untagged
@@ -41,7 +41,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &769146320194311399
+--- !u!114 &1117838330638071259
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,15 +50,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 902722623650840496}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac3dc79a9fc210b49ba9da60d4dc7a66, type: 3}
+  m_Script: {fileID: 11500000, guid: feba7eeb52d8bc245901cd3cac9711f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyID:
     m_SteamID: 0
   lobbyName: 
-  members: 
+  lobbyMemmbers: 0
   lobbyNameText: {fileID: 902722624945315475}
-  membersText: {fileID: 4452435476528637130}
+  lobbyMemmbersText: {fileID: 4452435476528637130}
 --- !u!1 &902722624945315473
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,7 +392,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 769146320194311399}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LobbyDataEntry, Assembly-CSharp
         m_MethodName: JoinLobby
         m_Mode: 1
