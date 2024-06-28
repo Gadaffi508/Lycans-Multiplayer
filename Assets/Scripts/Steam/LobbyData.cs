@@ -22,5 +22,6 @@ public class LobbyData : MonoBehaviour
     public void JoinLobby()
     {
         SteamLobbyManager.Instance.JoinLobby(lobbyID);
+        SteamChatManager.Instance.OpenChat();
     }
 }

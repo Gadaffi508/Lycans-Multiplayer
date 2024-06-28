@@ -54,4 +54,11 @@ public class SteamChatManager : MonoBehaviour
             textList.RemoveAt(0);
         }
     }
+
+    public void OpenChat()
+    {
+        if(chatMessage.gameObject.activeSelf is false)
+            chatMessage.gameObject.SetActive(true);
+    }
+        
 }

@@ -704,7 +704,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &3824450183069868614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -807,6 +807,7 @@ MonoBehaviour:
   syncInterval: 0
   speed: 500
   rotationSpeed: 5
+  sprintMultiplier: 3
 --- !u!114 &3514975906360272656
 MonoBehaviour:
   m_ObjectHideFlags: 0

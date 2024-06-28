@@ -11,9 +11,9 @@ public class CameraController : NetworkBehaviour
         cameraHolder.gameObject.SetActive(true);
     }
 
-    private void Update()
+    void Update()
     {
-        if (!isLocalPlayer) return;
+        if (!authority) return; 
 
         CmdMove(transform.position);
     }

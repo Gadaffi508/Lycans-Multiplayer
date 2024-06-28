@@ -41,43 +41,7 @@ public class SteamLobbyManager : MonoBehaviour
         
         lobbyChatMsg = Callback<LobbyChatMsg_t>.Create(OnLobbyChatMessage);
     }
-
-    private void OnLobbyCreated(LobbyCreated_t callback)
-    {
-        if(callback.m_eResult != EResult.k_EResultOK) return;
-        
-        Debug.Log("Lobby created");
-        
-        _manager.StartHost();
-
-        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
-
-        SteamMatchmaking.SetLobbyData(ulSteamID, "HostAddress",
-            SteamUser.GetSteamID().ToString());
-        
-        SteamMatchmaking.SetLobbyData(ulSteamID, "name",
-            SteamFriends.GetPersonaName().ToString());
-    }
-
-    private void OnJoinRequest(GameLobbyJoinRequested_t callback)
-    {
-        Debug.Log("Requested");
-        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
-    }
-
-    private void OnLobbyEntered(LobbyEnter_t callback)
-    {
-        CurrentLobbyID = callback.m_ulSteamIDLobby;
-        if(NetworkServer.active) return;
-
-        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
-        
-        Debug.Log("Newtork Adress : ------------------" + _manager.networkAddress);
-        
-        _manager.networkAddress = SteamMatchmaking.GetLobbyData(ulSteamID, "HostAddress");
-        _manager.StartClient();
-    }
-
+    
     public void HostLobby()
     {
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 10);
@@ -101,7 +65,43 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.RequestLobbyList();
     }
 
-    private void MatchLobby(LobbyMatchList_t callback)
+    void OnLobbyCreated(LobbyCreated_t callback)
+    {
+        if(callback.m_eResult != EResult.k_EResultOK) return;
+        
+        Debug.Log("Lobby created");
+        
+        _manager.StartHost();
+
+        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
+
+        SteamMatchmaking.SetLobbyData(ulSteamID, "HostAddress",
+            SteamUser.GetSteamID().ToString());
+        
+        SteamMatchmaking.SetLobbyData(ulSteamID, "name",
+            SteamFriends.GetPersonaName().ToString());
+    }
+
+    void OnJoinRequest(GameLobbyJoinRequested_t callback)
+    {
+        Debug.Log("Requested");
+        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
+    }
+
+    void OnLobbyEntered(LobbyEnter_t callback)
+    {
+        CurrentLobbyID = callback.m_ulSteamIDLobby;
+        if(NetworkServer.active) return;
+
+        CSteamID ulSteamID = new CSteamID(callback.m_ulSteamIDLobby);
+        
+        Debug.Log("Newtork Adress : ------------------" + _manager.networkAddress);
+        
+        _manager.networkAddress = SteamMatchmaking.GetLobbyData(ulSteamID, "HostAddress");
+        _manager.StartClient();
+    }
+
+    void MatchLobby(LobbyMatchList_t callback)
     {
         if (FindLobbyManager.Instance.lobbyList.Count>0) FindLobbyManager.Instance.ClearLobby();
 
@@ -113,7 +113,7 @@ public class SteamLobbyManager : MonoBehaviour
         }
     }
 
-    private void OnLobbyChatMessage(LobbyChatMsg_t callback)
+    void OnLobbyChatMessage(LobbyChatMsg_t callback)
     {
         byte[] data = new byte[4096];
 
@@ -128,7 +128,7 @@ public class SteamLobbyManager : MonoBehaviour
         SteamChatManager.Instance.DisplayChatMessage(SteamFriends.GetFriendPersonaName(steamIDUser),message);
     }
 
-    private void GetLobbyData(LobbyDataUpdate_t callback)
+    void GetLobbyData(LobbyDataUpdate_t callback)
     {
         FindLobbyManager.Instance.DisplayLobby(lobbyID,callback);
     }
