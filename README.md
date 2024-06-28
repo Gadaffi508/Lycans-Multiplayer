@@ -61,3 +61,6 @@ public class Player : NetworkBehaviour
     }
 }
 ```
+#### Örnek Görüntüler:
+
+![1](https://github.com/Gadaffi508/Lycans-Multiplayer/assets/121219831/a9e7333f-23a1-4894-9765-05f976d1d9d2)
