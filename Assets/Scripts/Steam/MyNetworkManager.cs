@@ -26,6 +26,11 @@ public class MyNetworkManager : NetworkManager
     public void InstatePlayer()
     {
         NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
+
+        foreach (SteamPlayerObject player in GamePlayer)
+        {
+            player.AllCameraOff();
+        }
     }
 
     GameObject Player(NetworkConnectionToClient conn)

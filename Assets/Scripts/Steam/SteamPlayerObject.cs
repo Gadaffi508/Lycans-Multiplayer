@@ -9,8 +9,10 @@ public class SteamPlayerObject : NetworkBehaviour
     [SyncVar] public int connectionID, playerIdNumber;
     [SyncVar] public ulong playerSteamId;
 
-    [SyncVar(hook = nameof(PlayerNameUpdate))]
+    [SyncVar(hook = nameof(OnPlayerNameChanged))]
     public string playerName;
+
+    [SyncVar] public GameObject myCamera;
 
     #region Singleton
 
@@ -29,7 +31,7 @@ public class SteamPlayerObject : NetworkBehaviour
     public override void OnStartAuthority()
     {
         DontDestroyOnLoad(this);
-        SetPlayerName(SteamFriends.GetPersonaName().ToString());
+        CmdSetPlayerName(SteamFriends.GetPersonaName());
         gameObject.name = "LocalGamePlayer";
         SteamLobbyController.Instance.FindLocalPlayer();
         SteamLobbyController.Instance.UpdateLobbyName();
@@ -39,7 +41,7 @@ public class SteamPlayerObject : NetworkBehaviour
     {
         Manager.GamePlayer.Add(this);
         SteamLobbyController.Instance.UpdateLobbyName();
-        SteamLobbyController.Instance.UpdatePlayerLıst();
+        SteamLobbyController.Instance.UpdatePlayerList();
     }
 
     public override void OnStopClient()
@@ -47,22 +49,29 @@ public class SteamPlayerObject : NetworkBehaviour
         Manager.GamePlayer.Remove(this);
     }
 
-    [Command]
-    void SetPlayerName(string _playerName)
+    public void AllCameraOff()
     {
-        this.PlayerNameUpdate(this.playerName,_playerName);
+        GameObject[] allCamera = GameObject.FindGameObjectsWithTag("Camera");
+
+        foreach (GameObject camera in allCamera)
+        {
+            camera.SetActive(false);
+        }
+        
+        myCamera.SetActive(true);
+    }
+
+    [Command]
+    void CmdSetPlayerName(string _playerName)
+    {
+        playerName = _playerName;
     }
     
-    public void PlayerNameUpdate(string oldValue, string newValue)
+    void OnPlayerNameChanged(string oldValue, string newValue)
     {
-        if (isServer)
-        {
-            this.playerName = newValue;
-        }
-
         if (isClient)
         {
-            SteamLobbyController.Instance.UpdatePlayerLıst();
+            SteamLobbyController.Instance.UpdatePlayerList();
         }
     }
 

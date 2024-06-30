@@ -974,8 +974,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e07ac13031eccc41a35d8dd7940a69a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  "playerL\u0131stItemViewContent": {fileID: 117918262}
-  "playerL\u0131stItemPrefab": {fileID: 6657508503174208517, guid: e23bd8d8ce96543479e91305a3b4fa14, type: 3}
+  playerListItemViewContent: {fileID: 117918262}
+  playerListItemPrefab: {fileID: 6657508503174208517, guid: e23bd8d8ce96543479e91305a3b4fa14, type: 3}
   localPlayerObject: {fileID: 0}
   currentLobbyID: 0
   playerItemCreated: 0
