@@ -10,8 +10,10 @@ public class SteamPlayerController : NetworkBehaviour
     public float rotationSpeed;
     public float sprintMultiplier;
 
-    private float _X, _Y;
+    private float _X, _Y, currentSpeed;
     private Vector3 _movement;
+    private bool isSprinting;
+    private int sprinting;
 
     private Rigidbody _rb;
     private Animator _animator;
@@ -27,17 +29,20 @@ public class SteamPlayerController : NetworkBehaviour
     {
         if(!isLocalPlayer) return;
 
+        #region Inputs
+
         _X = Input.GetAxis("Horizontal");
         _Y = Input.GetAxis("Vertical");
         
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
-        
-        float currentSpeed = isSprinting ? speed * sprintMultiplier : speed;
+        isSprinting = Input.GetKey(KeyCode.LeftShift);
 
-        int sprinting = isSprinting ? 1 : 0;
+        #endregion
         
-        _animator.SetFloat("velocity",_rb.velocity.magnitude);
-        _animator.SetFloat("Sprint", sprinting);
+        currentSpeed = isSprinting ? speed * sprintMultiplier : speed;
+
+        sprinting = isSprinting ? 1 : 0;
+
+        Animations();
         
         CmdMove(_X,_Y,currentSpeed);
     }
@@ -54,7 +59,31 @@ public class SteamPlayerController : NetworkBehaviour
         
         if (dir == Vector3.zero) return;
         
+        transform.rotation = Quaternion.Slerp(transform.rotation, LookDirection(dir), rotationSpeed * Time.deltaTime);
+    }
+
+    Quaternion LookDirection(Vector3 dir)
+    {
         Quaternion lookDir = Quaternion.LookRotation(dir.normalized);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookDir, rotationSpeed * Time.deltaTime);
+        
+        lookDir = Quaternion.Euler(0f, lookDir.eulerAngles.y, lookDir.eulerAngles.z);
+
+        return lookDir;
+    }
+
+    void Animations()
+    {
+        _animator.SetFloat("velocity",_rb.velocity.magnitude);
+        
+        _animator.SetFloat("Sprint", sprinting);
+        
+        if (Input.GetMouseButtonDown(0))
+        {
+            _animator.SetLayerWeight(_animator.GetLayerIndex("Fight"), 1);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _animator.SetLayerWeight(_animator.GetLayerIndex("Fight"), 0);
+        }
     }
 }
