@@ -5,6 +5,20 @@ using UnityEngine;
 
 public class SteamPlayerObject : NetworkBehaviour
 {
+    #region Singleton
+
+    private MyNetworkManager _manager;
+    private MyNetworkManager Manager
+    {
+        get
+        {
+            if (_manager != null) return _manager;
+            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+        }
+    }
+
+    #endregion
+    
     [SyncVar] public PlayerData data;
 
     [SyncVar(hook = nameof(OnPlayerNameChanged))]
@@ -19,21 +33,20 @@ public class SteamPlayerObject : NetworkBehaviour
         _controller = GetComponent<SteamPlayerController>();
         _controller.enabled = false;
     }
-        
 
-    #region Singleton
-
-    private MyNetworkManager _manager;
-    private MyNetworkManager Manager
+    private void Update()
     {
-        get
+        if (NetworkClient.isConnected)
         {
-            if (_manager != null) return _manager;
-            return _manager = MyNetworkManager.singleton as MyNetworkManager;
+            float networkPing = (float)NetworkTime.rtt;
+            var pingInMs = Mathf.RoundToInt(networkPing * 1000);
+            Debug.Log($"Ping: {pingInMs} ms");
+        }
+        else
+        {
+            Debug.Log("Ping: N/A");
         }
     }
-
-    #endregion
 
     public override void OnStartAuthority()
     {
