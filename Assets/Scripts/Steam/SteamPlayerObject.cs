@@ -1,18 +1,25 @@
+using System;
 using Steamworks;
 using Mirror;
 using UnityEngine;
 
 public class SteamPlayerObject : NetworkBehaviour
 {
-    [SyncVar] public GameObject playerModel;
-    
-    [SyncVar] public int connectionID, playerIdNumber;
-    [SyncVar] public ulong playerSteamId;
+    [SyncVar] public PlayerData data;
 
     [SyncVar(hook = nameof(OnPlayerNameChanged))]
     public string playerName;
 
-    [SyncVar] public GameObject myCamera;
+    public Camera myCamera;
+
+    private SteamPlayerController _controller;
+
+    private void Start()
+    {
+        _controller = GetComponent<SteamPlayerController>();
+        _controller.enabled = false;
+    }
+        
 
     #region Singleton
 
@@ -55,10 +62,13 @@ public class SteamPlayerObject : NetworkBehaviour
 
         foreach (GameObject camera in allCamera)
         {
+            Debug.Log(camera.name);
             camera.SetActive(false);
         }
+
+        Debug.Log("camera name" + myCamera.gameObject.name);
         
-        myCamera.SetActive(true);
+        myCamera.gameObject.SetActive(true);
     }
 
     [Command]
@@ -83,8 +93,12 @@ public class SteamPlayerObject : NetworkBehaviour
     [Command]
     void CmdStartGame(string sceneName)
     {
-        _manager.StartGame(sceneName);
+        GameObject player = Instantiate(data.playerModel, transform.position, Quaternion.identity,transform);
+
+        myCamera = player.GetComponentInChildren<Camera>();
         
-        playerModel.SetActive(true);
+        _manager.StartGame(sceneName);
+
+        _controller.enabled = true;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Steamworks;
 using TMPro;
 using UnityEngine;
@@ -5,35 +6,30 @@ using UnityEngine.UI;
 
 public class SteamPlayerLıstItem : MonoBehaviour
 {
-    public string playerName;
-    public int connectionID;
-    public ulong playerSteamID;
-
-    private bool _avatarReceived;
+    public PlayerLıstItemData data;
 
     public TextMeshProUGUI playerNameText;
     public RawImage playerIcon;
 
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
-
     private void Start() => ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
 
     public void SetPlayerValues()
     {
-        playerNameText.text = playerName;
-        if(!_avatarReceived) GetPlayerIcon();
+        playerNameText.text = data.playerName;
+        if(!data._avatarReceived) GetPlayerIcon();
     }
 
     void GetPlayerIcon()
     {
-        int ımageID = SteamFriends.GetLargeFriendAvatar((CSteamID)playerSteamID);
+        int ımageID = SteamFriends.GetLargeFriendAvatar((CSteamID)data.playerSteamID);
         if(ımageID == -1) return;
         playerIcon.texture = GetSteamAsTexture(ımageID);
     }
 
-    private void OnImageLoaded(AvatarImageLoaded_t callback)
+    void OnImageLoaded(AvatarImageLoaded_t callback)
     {
-        if (callback.m_steamID.m_SteamID == playerSteamID)
+        if (callback.m_steamID.m_SteamID == data.playerSteamID)
         {
             playerIcon.texture = GetSteamAsTexture(callback.m_iImage);
         }
@@ -58,9 +54,14 @@ public class SteamPlayerLıstItem : MonoBehaviour
             }
         }
 
-        _avatarReceived = true;
+        data._avatarReceived = true;
         return texture;
     }
 
     #endregion
+
+    void OnDisable()
+    {
+        data._avatarReceived = false;
+    }
 }

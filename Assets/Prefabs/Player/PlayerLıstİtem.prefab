@@ -472,8 +472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a27e398d8ca6e4e88a8336fd731515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerName: 
-  connectionID: 0
-  playerSteamID: 0
+  data: {fileID: 11400000, guid: 5196a3ee924e30f43b54259d229cdeb1, type: 2}
   playerNameText: {fileID: 6657508501938453798}
   playerIcon: {fileID: 6657508502567282780}
