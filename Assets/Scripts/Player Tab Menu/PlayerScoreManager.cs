@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayersGetData : MonoBehaviour
+public class PlayerScoreManager : MonoBehaviour
 {
     public string playerName;
     

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerShowData : MonoBehaviour
+public class ScoreBoardManager : MonoBehaviour
 {
     #region Singleton
 
@@ -28,9 +28,10 @@ public class PlayerShowData : MonoBehaviour
         for (int i = 0; i < Manager.GamePlayer.Count; i++)
         {
             GameObject player = Instantiate(playerGetData,viewContent);
-            PlayersGetData playerData = player.GetComponent<PlayersGetData>();
+            PlayerScoreManager playerData = player.GetComponent<PlayerScoreManager>();
 
             playerData.playerName = Manager.GamePlayer[i].playerName;
+            playerData.playerMS = Manager.GamePlayer[i].pingInMs;
             playerData.UpdatePlayerInformation();
         }
     }

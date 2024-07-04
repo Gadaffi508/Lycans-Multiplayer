@@ -8,6 +8,7 @@ public class SteamPlayerObject : NetworkBehaviour
     #region Singleton
 
     private MyNetworkManager _manager;
+
     private MyNetworkManager Manager
     {
         get
@@ -18,7 +19,7 @@ public class SteamPlayerObject : NetworkBehaviour
     }
 
     #endregion
-    
+
     [SyncVar] public PlayerData data;
 
     [SyncVar(hook = nameof(OnPlayerNameChanged))]
@@ -28,6 +29,10 @@ public class SteamPlayerObject : NetworkBehaviour
 
     private SteamPlayerController _controller;
 
+    public int pingInMs;
+
+    private float NetworkPing => (float)NetworkTime.rtt;
+
     private void Start()
     {
         _controller = GetComponent<SteamPlayerController>();
@@ -36,16 +41,9 @@ public class SteamPlayerObject : NetworkBehaviour
 
     private void Update()
     {
-        if (NetworkClient.isConnected)
-        {
-            float networkPing = (float)NetworkTime.rtt;
-            var pingInMs = Mathf.RoundToInt(networkPing * 1000);
-            Debug.Log($"Ping: {pingInMs} ms");
-        }
-        else
-        {
-            Debug.Log("Ping: N/A");
-        }
+        if (!NetworkClient.isConnected) return;
+
+        pingInMs = Mathf.RoundToInt(NetworkPing * 1000);
     }
 
     public override void OnStartAuthority()
@@ -80,7 +78,7 @@ public class SteamPlayerObject : NetworkBehaviour
         }
 
         Debug.Log("camera name" + myCamera.gameObject.name);
-        
+
         myCamera.gameObject.SetActive(true);
     }
 
@@ -89,7 +87,7 @@ public class SteamPlayerObject : NetworkBehaviour
     {
         playerName = _playerName;
     }
-    
+
     void OnPlayerNameChanged(string oldValue, string newValue)
     {
         if (isClient)
@@ -106,10 +104,10 @@ public class SteamPlayerObject : NetworkBehaviour
     [Command]
     void CmdStartGame(string sceneName)
     {
-        GameObject player = Instantiate(data.playerModel, transform.position, Quaternion.identity,transform);
+        GameObject player = Instantiate(data.playerModel, transform.position, Quaternion.identity, transform);
 
         myCamera = player.GetComponentInChildren<Camera>();
-        
+
         _manager.StartGame(sceneName);
 
         _controller.enabled = true;
