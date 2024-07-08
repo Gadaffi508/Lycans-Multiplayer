@@ -22,11 +22,6 @@ public class MyNetworkManager : NetworkManager
     public void StartGame(string sceneName)
     {
         ServerChangeScene(sceneName);
-        
-        foreach (SteamPlayerObject player in GamePlayer)
-        {
-            player.AllCameraOff();
-        }
     }
 
     public void InstatePlayer()

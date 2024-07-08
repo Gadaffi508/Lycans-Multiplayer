@@ -24,7 +24,7 @@ public class SteamPlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if(!isLocalPlayer) return;
+        if(!isOwned || !isClient || !isLocalPlayer) return;
 
         #region Inputs
 

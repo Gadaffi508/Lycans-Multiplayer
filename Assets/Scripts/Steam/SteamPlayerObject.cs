@@ -25,7 +25,7 @@ public class SteamPlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(OnPlayerNameChanged))]
     public string playerName;
 
-    public Camera myCamera;
+    public Transform myCamera;
 
     private SteamPlayerController _controller;
 
@@ -51,6 +51,7 @@ public class SteamPlayerObject : NetworkBehaviour
         DontDestroyOnLoad(this);
         CmdSetPlayerName(SteamFriends.GetPersonaName());
         gameObject.name = "LocalGamePlayer";
+        
         SteamLobbyController.Instance.FindLocalPlayer();
         SteamLobbyController.Instance.UpdateLobbyName();
     }
@@ -67,21 +68,6 @@ public class SteamPlayerObject : NetworkBehaviour
         Manager.GamePlayer.Remove(this);
     }
 
-    public void AllCameraOff()
-    {
-        GameObject[] allCamera = GameObject.FindGameObjectsWithTag("Camera");
-
-        foreach (GameObject camera in allCamera)
-        {
-            Debug.Log(camera.name);
-            camera.SetActive(false);
-        }
-
-        Debug.Log("camera name" + myCamera.gameObject.name);
-
-        myCamera.gameObject.SetActive(true);
-    }
-
     [Command]
     void CmdSetPlayerName(string _playerName)
     {
@@ -90,9 +76,14 @@ public class SteamPlayerObject : NetworkBehaviour
 
     void OnPlayerNameChanged(string oldValue, string newValue)
     {
-        if (isClient)
+        if (isOwned || isClient || isLocalPlayer)
         {
+            this.playerName = newValue;
             SteamLobbyController.Instance.UpdatePlayerList();
+        }
+        else
+        {
+            
         }
     }
 
@@ -104,12 +95,21 @@ public class SteamPlayerObject : NetworkBehaviour
     [Command]
     void CmdStartGame(string sceneName)
     {
-        GameObject player = Instantiate(data.playerModel, transform.position, Quaternion.identity, transform);
-
-        myCamera = player.GetComponentInChildren<Camera>();
+        Instantiate(data.playerModel, transform.position, Quaternion.identity, transform);
 
         _manager.StartGame(sceneName);
 
         _controller.enabled = true;
+        
+        FindCamera();
+    }
+
+    void FindCamera()
+    {
+        myCamera = Camera.main.transform;
+        
+        myCamera.SetParent(transform);
+        myCamera.position = new Vector3(0,1f,-5.2f);
+
     }
 }
