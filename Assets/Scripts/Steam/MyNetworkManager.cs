@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using Steamworks;
@@ -29,15 +27,20 @@ public class MyNetworkManager : NetworkManager
         NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
     }
 
+    public void ApplicationQuit()
+    {
+        Application.Quit();
+    }
+
     GameObject Player(NetworkConnectionToClient conn)
     {
         SteamPlayerObject gamePlayerInstance = Instantiate(gamePlayerPrefabs);
         
-        gamePlayerInstance.data.connectionID = conn.connectionId;
-        gamePlayerInstance.data.playerIdNumber = GamePlayer.Count + 1;
+        gamePlayerInstance.connectionID = conn.connectionId;
+        gamePlayerInstance.playerIdNumber = GamePlayer.Count + 1;
 
         CSteamID _currentLobbID = (CSteamID)SteamLobbyManager.Instance.CurrentLobbyID;
-        gamePlayerInstance.data.playerSteamId =
+        gamePlayerInstance.playerSteamId =
             (ulong)SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbID, GamePlayer.Count);
 
         return gamePlayerInstance.gameObject;

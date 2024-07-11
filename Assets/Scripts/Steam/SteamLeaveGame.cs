@@ -30,6 +30,11 @@ public class SteamLeaveGame : MonoBehaviour
         lobbyID = (CSteamID)SteamLobbyManager.Instance.CurrentLobbyID;
     }
 
+    public void ApplicationQuit()
+    {
+        Application.Quit();
+    }
+
     public void LeaveGame()
     {
         if(lobbyID != (CSteamID)0)

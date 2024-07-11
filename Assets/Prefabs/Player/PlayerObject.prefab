@@ -173,9 +173,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  data: {fileID: 11400000, guid: c368d7d575b3fd042bb554cd3ecd9d7b, type: 2}
+  playerModel: {fileID: 1841439745416390637, guid: 875dca2a6dde5964aa85c0b6c81a7030, type: 3}
+  connectionID: 0
+  playerIdNumber: 0
+  playerSteamId: 0
   playerName: 
   myCamera: {fileID: 0}
+  pingInMs: 0
 --- !u!114 &6787794697632409280
 MonoBehaviour:
   m_ObjectHideFlags: 0

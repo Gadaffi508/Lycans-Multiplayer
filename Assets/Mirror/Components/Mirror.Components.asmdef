@@ -5,7 +5,10 @@
         "GUID:30817c1a0e6d646d99c048fc403f5979"
     ],
     "includePlatforms": [],
-    "excludePlatforms": [],
+    "excludePlatforms": [
+        "WindowsStandalone32",
+        "WindowsStandalone64"
+    ],
     "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],

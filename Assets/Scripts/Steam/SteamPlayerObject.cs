@@ -1,6 +1,6 @@
-using System;
 using Steamworks;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SteamPlayerObject : NetworkBehaviour
@@ -19,8 +19,15 @@ public class SteamPlayerObject : NetworkBehaviour
     }
 
     #endregion
-
-    [SyncVar] public PlayerData data;
+    [Header("Player OBJ")]
+    [SyncVar] public GameObject playerModel;
+    
+    [Header("Player Connection Values")]
+    [SyncVar] public int connectionID;
+    [SyncVar] public int playerIdNumber;
+    
+    [Header("Player Object Values")]
+    public ulong playerSteamId;
 
     [SyncVar(hook = nameof(OnPlayerNameChanged))]
     public string playerName;
@@ -66,50 +73,57 @@ public class SteamPlayerObject : NetworkBehaviour
     public override void OnStopClient()
     {
         Manager.GamePlayer.Remove(this);
+        SteamLobbyController.Instance.UpdatePlayerList();
     }
 
     [Command]
     void CmdSetPlayerName(string _playerName)
     {
-        playerName = _playerName;
+        OnPlayerNameChanged(playerName,_playerName);
     }
 
     void OnPlayerNameChanged(string oldValue, string newValue)
     {
-        if (isOwned || isClient || isLocalPlayer)
+        if (isServer)
         {
             this.playerName = newValue;
-            SteamLobbyController.Instance.UpdatePlayerList();
         }
-        else
+        if(isClient)
         {
-            
+            SteamLobbyController.Instance.UpdatePlayerList();
         }
     }
 
     public void CanStartGame(string sceneName)
     {
-        if (authority) CmdStartGame(sceneName);
+        CmdStartGame(sceneName);
     }
 
     [Command]
     void CmdStartGame(string sceneName)
     {
-        Instantiate(data.playerModel, transform.position, Quaternion.identity, transform);
+        Instantiate(playerModel, transform.position, Quaternion.identity, transform);
 
         _manager.StartGame(sceneName);
 
         _controller.enabled = true;
         
-        FindCamera();
+        if(isLocalPlayer) AddCamera();
     }
 
-    void FindCamera()
+    void AddCamera()
     {
         myCamera = Camera.main.transform;
+
+        myCamera.AddComponent<CameraController>();
+        
+        CameraController camera = myCamera.GetComponent<CameraController>();
+
+        camera.lookAt = this.transform;
+        camera.distance = 5;
+        camera.sensitivity = 100;
         
         myCamera.SetParent(transform);
-        myCamera.position = new Vector3(0,1f,-5.2f);
 
     }
 }

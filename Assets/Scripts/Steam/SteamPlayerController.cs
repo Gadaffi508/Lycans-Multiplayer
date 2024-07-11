@@ -14,6 +14,7 @@ public class SteamPlayerController : NetworkBehaviour
 
     private Rigidbody _rb;
     private Animator _animator;
+    private Vector3 direction;
 
     private void Start()
     {
@@ -48,29 +49,30 @@ public class SteamPlayerController : NetworkBehaviour
     void CmdMove(float x, float y,float _currentspeed) => RpcMove(x,y,_currentspeed);
 
     [ClientRpc]
-    void RpcMove(float x, float y,float _currentspeed)
+    void RpcMove(float x, float y, float _currentspeed)
     {
-        Vector3 dir = new Vector3(x * _currentspeed * Time.deltaTime,_rb.velocity.y,y * _currentspeed * Time.deltaTime);
+        direction = new Vector3(x, 0, y).normalized;
+        
+        Vector3 cameraForward = Camera.main.transform.forward;
+        
+        cameraForward.y = 0;
+        
+        Vector3 moveDirection = cameraForward * direction.z + Camera.main.transform.right * direction.x;
+        
+        Vector3 dir = new Vector3(moveDirection.x* _currentspeed * Time.deltaTime,_rb.velocity.y,moveDirection.z* _currentspeed * Time.deltaTime);
 
         _rb.velocity = dir;
-        
-        if (dir == Vector3.zero) return;
-        
-        transform.rotation = Quaternion.Slerp(transform.rotation, LookDirection(dir), rotationSpeed * Time.deltaTime);
-    }
 
-    Quaternion LookDirection(Vector3 dir)
-    {
-        Quaternion lookDir = Quaternion.LookRotation(dir.normalized);
-        
-        lookDir = Quaternion.Euler(0f, lookDir.eulerAngles.y, lookDir.eulerAngles.z);
-
-        return lookDir;
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 
     void Animations()
     {
-        _animator.SetFloat("velocity",_rb.velocity.magnitude);
+        _animator.SetFloat("velocity",direction.magnitude);
         
         _animator.SetFloat("Sprint", sprinting);
         

@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class SteamPlayerLıstItem : MonoBehaviour
 {
-    public PlayerLıstItemData data;
+    public string playerName;
+    public int connectionID;
+    public ulong playerSteamID;
+
+    public bool _avatarReceived;
 
     public TextMeshProUGUI playerNameText;
     public RawImage playerIcon;
@@ -16,20 +20,20 @@ public class SteamPlayerLıstItem : MonoBehaviour
 
     public void SetPlayerValues()
     {
-        playerNameText.text = data.playerName;
-        if(!data._avatarReceived) GetPlayerIcon();
+        playerNameText.text = playerName;
+        if(!_avatarReceived) GetPlayerIcon();
     }
 
     void GetPlayerIcon()
     {
-        int ımageID = SteamFriends.GetLargeFriendAvatar((CSteamID)data.playerSteamID);
+        int ımageID = SteamFriends.GetLargeFriendAvatar((CSteamID)playerSteamID);
         if(ımageID == -1) return;
         playerIcon.texture = GetSteamAsTexture(ımageID);
     }
 
     void OnImageLoaded(AvatarImageLoaded_t callback)
     {
-        if (callback.m_steamID.m_SteamID == data.playerSteamID)
+        if (callback.m_steamID.m_SteamID == playerSteamID)
         {
             playerIcon.texture = GetSteamAsTexture(callback.m_iImage);
         }
@@ -54,7 +58,7 @@ public class SteamPlayerLıstItem : MonoBehaviour
             }
         }
 
-        data._avatarReceived = true;
+        _avatarReceived = true;
         return texture;
     }
 
@@ -62,6 +66,6 @@ public class SteamPlayerLıstItem : MonoBehaviour
 
     void OnDisable()
     {
-        data._avatarReceived = false;
+        _avatarReceived = false;
     }
 }
