@@ -14,17 +14,12 @@ public class MyNetworkManager : NetworkManager
     {
         _conn = conn;
 
-        InstatePlayer();
+        NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
     }
 
     public void StartGame(string sceneName)
     {
         ServerChangeScene(sceneName);
-    }
-
-    public void InstatePlayer()
-    {
-        NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
     }
 
     public void ApplicationQuit()

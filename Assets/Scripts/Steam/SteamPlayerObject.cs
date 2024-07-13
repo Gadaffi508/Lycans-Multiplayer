@@ -49,7 +49,7 @@ public class SteamPlayerObject : NetworkBehaviour
     public override void OnStartAuthority()
     {
         DontDestroyOnLoad(this);
-        CmdSetPlayerName(SteamFriends.GetPersonaName());
+        CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
         gameObject.name = "LocalGamePlayer";
         
         SteamLobbyController.Instance.FindLocalPlayer();
@@ -89,7 +89,7 @@ public class SteamPlayerObject : NetworkBehaviour
 
     public void CanStartGame(string sceneName)
     {
-        if(authority)
+        if(isLocalPlayer)
             CmdStartGame(sceneName);
     }
 
@@ -98,11 +98,14 @@ public class SteamPlayerObject : NetworkBehaviour
     {
         _manager.StartGame(sceneName);
         
-        Instantiate(playerModel, transform.position, Quaternion.identity, transform);
+        if(!isLocalPlayer) return;
+        
+        GameObject playerInstance = Instantiate(playerModel, transform.position, Quaternion.identity, transform);
+        playerInstance.GetComponent<NetworkIdentity>().netId = GetComponent<NetworkIdentity>().netId;
 
         _controller.enabled = true;
         
-        if(isLocalPlayer) AddCamera();
+        AddCamera();
     }
 
     void AddCamera()

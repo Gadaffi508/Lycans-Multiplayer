@@ -44,7 +44,7 @@ public class SteamLobbyManager : MonoBehaviour
     
     public void HostLobby()
     {
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 10);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 2);
     }
 
     public void LeaveGame(CSteamID lobbyID)
@@ -61,7 +61,8 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if(lobbyID.Count>0) lobbyID.Clear();
         
-        SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
+        SteamMatchmaking.AddRequestLobbyListResultCountFilter(4);
+
         SteamMatchmaking.RequestLobbyList();
     }
 
@@ -85,6 +86,7 @@ public class SteamLobbyManager : MonoBehaviour
     void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
         Debug.Log("Requested");
+        SteamChatManager.Instance.OpenChat();
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
 
