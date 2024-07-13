@@ -89,8 +89,7 @@ public class SteamPlayerObject : NetworkBehaviour
 
     public void CanStartGame(string sceneName)
     {
-        if(isLocalPlayer)
-            CmdStartGame(sceneName);
+        CmdStartGame(sceneName);
     }
 
     [Command]
