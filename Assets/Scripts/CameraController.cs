@@ -14,6 +14,8 @@ namespace Mirror
         private float currentX = 0;
         private float currentY = 25;
 
+        private bool _clickEscape = false;
+
         private void LateUpdate()
         {
             currentX += Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
@@ -25,6 +27,13 @@ namespace Mirror
             transform.position = lookAt.position + rotation * direction;
 
             transform.LookAt(lookAt.position);
+
+            if (_clickEscape is true)
+                Cursor.lockState = CursorLockMode.Locked;
+            else Cursor.lockState = CursorLockMode.None;
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+                _clickEscape = !_clickEscape;
         }
     }
 }

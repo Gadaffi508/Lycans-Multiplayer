@@ -59,6 +59,7 @@ MonoBehaviour:
   lobbyMemmbers: 0
   lobbyNameText: {fileID: 902722624945315475}
   lobbyMemmbersText: {fileID: 4452435476528637130}
+  joinButton: {fileID: 4452435475640360171}
 --- !u!1 &902722624945315473
 GameObject:
   m_ObjectHideFlags: 0

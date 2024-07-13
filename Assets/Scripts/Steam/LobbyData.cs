@@ -1,6 +1,7 @@
 using Steamworks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LobbyData : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class LobbyData : MonoBehaviour
 
     public TextMeshProUGUI lobbyNameText;
     public TextMeshProUGUI lobbyMemmbersText;
+
+    public Button joinButton;
 
     public void SetLobbyData()
     {
@@ -21,6 +24,8 @@ public class LobbyData : MonoBehaviour
 
     public void JoinLobby()
     {
+        joinButton.interactable = false;
+        SteamLobbyController.Instance.JoinLobby();
         SteamLobbyManager.Instance.JoinLobby(lobbyID);
         SteamChatManager.Instance.OpenChat();
     }

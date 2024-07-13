@@ -19,6 +19,8 @@ public class SteamLobbyController : MonoBehaviour
     private List<SteamPlayerLıstItem> _playerListItems = new List<SteamPlayerLıstItem>();
     public SteamPlayerObject localObject;
 
+    [Header("CloseOBJ")] [SerializeField] private GameObject[] objects;
+
     #region Singleton
 
     private MyNetworkManager _manager;
@@ -108,6 +110,14 @@ public class SteamLobbyController : MonoBehaviour
     public void StartGame(string sceneName)
     {
         localObject.CanStartGame(sceneName);
+    }
+
+    public void JoinLobby()
+    {
+        foreach (GameObject obj in objects)
+        {
+            obj.SetActive(false);
+        }
     }
 
     void CreatePlayer(SteamPlayerObject player)

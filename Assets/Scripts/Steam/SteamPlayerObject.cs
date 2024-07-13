@@ -46,13 +46,6 @@ public class SteamPlayerObject : NetworkBehaviour
         _controller.enabled = false;
     }
 
-    private void Update()
-    {
-        if (!NetworkClient.isConnected) return;
-
-        pingInMs = Mathf.RoundToInt(NetworkPing * 1000);
-    }
-
     public override void OnStartAuthority()
     {
         DontDestroyOnLoad(this);
@@ -96,15 +89,16 @@ public class SteamPlayerObject : NetworkBehaviour
 
     public void CanStartGame(string sceneName)
     {
-        CmdStartGame(sceneName);
+        if(authority)
+            CmdStartGame(sceneName);
     }
 
     [Command]
     void CmdStartGame(string sceneName)
     {
-        Instantiate(playerModel, transform.position, Quaternion.identity, transform);
-
         _manager.StartGame(sceneName);
+        
+        Instantiate(playerModel, transform.position, Quaternion.identity, transform);
 
         _controller.enabled = true;
         
