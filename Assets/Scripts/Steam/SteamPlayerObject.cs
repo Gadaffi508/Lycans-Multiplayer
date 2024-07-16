@@ -100,7 +100,7 @@ public class SteamPlayerObject : NetworkBehaviour
         if(!isLocalPlayer) return;
         
         GameObject playerInstance = Instantiate(playerModel, transform.position, Quaternion.identity, transform);
-        playerInstance.GetComponent<NetworkIdentity>().netId = GetComponent<NetworkIdentity>().netId;
+        playerInstance.GetComponent<NetworkIdentity>().netId = GetComponent<NetworkIdentity>().netId * 10;
 
         _controller.enabled = true;
         
