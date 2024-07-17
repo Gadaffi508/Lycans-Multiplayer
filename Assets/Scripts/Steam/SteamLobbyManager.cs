@@ -44,7 +44,7 @@ public class SteamLobbyManager : MonoBehaviour
     
     public void HostLobby()
     {
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 2);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, 10);
     }
 
     public void LeaveGame(CSteamID lobbyID)
@@ -60,8 +60,6 @@ public class SteamLobbyManager : MonoBehaviour
     public void FindLobbies()
     {
         if(lobbyID.Count>0) lobbyID.Clear();
-        
-        SteamMatchmaking.AddRequestLobbyListResultCountFilter(4);
 
         SteamMatchmaking.RequestLobbyList();
     }

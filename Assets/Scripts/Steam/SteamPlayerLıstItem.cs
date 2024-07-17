@@ -28,14 +28,14 @@ public class SteamPlayerLıstItem : MonoBehaviour
     {
         int ımageID = SteamFriends.GetLargeFriendAvatar((CSteamID)playerSteamID);
         if(ımageID == -1) return;
-        playerIcon.texture = GetSteamAsTexture(ımageID);
+        if (playerIcon != null) playerIcon.texture = GetSteamAsTexture(ımageID);
     }
 
     void OnImageLoaded(AvatarImageLoaded_t callback)
     {
         if (callback.m_steamID.m_SteamID == playerSteamID)
         {
-            playerIcon.texture = GetSteamAsTexture(callback.m_iImage);
+            if (playerIcon != null) playerIcon.texture = GetSteamAsTexture(callback.m_iImage);
         }
         else return;
     }

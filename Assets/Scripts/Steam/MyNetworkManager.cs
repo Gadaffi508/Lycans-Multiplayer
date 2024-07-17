@@ -7,14 +7,10 @@ public class MyNetworkManager : NetworkManager
 {
     public SteamPlayerObject gamePlayerPrefabs;
     public List<SteamPlayerObject> GamePlayer = new List<SteamPlayerObject>();
-    
-    private NetworkConnectionToClient _conn;
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        _conn = conn;
-
-        NetworkServer.AddPlayerForConnection(_conn, Player(_conn));
+        NetworkServer.AddPlayerForConnection(conn, Player(conn));
     }
 
     public void StartGame(string sceneName)
