@@ -101,7 +101,7 @@ namespace Mirror
             new Dictionary<int, NetworkConnectionToClient>();
 
         /// <summary>The unique network Id of this object (unique at runtime).</summary>
-        public uint netId;
+        public uint netId { get; internal set; }
 
         /// <summary>Unique identifier for NetworkIdentity objects within a scene, used for spawning scene objects.</summary>
         // persistent scene id <sceneHash/32,sceneId/32> (see AssignSceneID comments)
