@@ -16,8 +16,6 @@ namespace Mirror
         public int width = 150;
         public int height = 25;
 
-        public int fontSize = 14;
-
         void OnGUI()
         {
             // only while client is active
@@ -29,7 +27,6 @@ namespace Mirror
             GUILayout.BeginArea(rect);
             GUIStyle style = GUI.skin.GetStyle("Label");
             style.alignment = TextAnchor.MiddleRight;
-            style.fontSize = fontSize;
             GUILayout.BeginHorizontal(style);
                 GUILayout.Label($"RTT: {Math.Round(NetworkTime.rtt * 1000)}ms");
                 GUI.color = NetworkClient.connectionQuality.ColorCode();
